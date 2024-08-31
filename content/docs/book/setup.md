@@ -22,6 +22,7 @@ Then run your code with the `Run` button from VSCode's `rust-analyzer` extension
 cargo run --bin learn_rust
 ```
 
+
 ## Import Modules
 
 In Rust, we can import modules by using `use` keyword.
@@ -117,6 +118,7 @@ This code demonstrates constants, variable shadowing, type conversion, mutable v
 
 
 ## Data Types
+
 
 ### Number Types
 
@@ -249,7 +251,6 @@ f64: 1.2222222222222223
 5 % 4 = 1
 num_3 += 1: 6
 ```
-
 
 In this example, we can observe several important aspects of Rust's math operations:
 
