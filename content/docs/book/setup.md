@@ -45,6 +45,14 @@ fn main() {
 }
 ```
 
+Output:
+
+```
+What is your name?
+Eason
+Hello Eason! Nice to meet you!
+```
+
 Let's break down the code above:
 
 1. `#![allow(unused)]` is an attribute that tells the Rust compiler to suppress warnings about unused code in this file. This is useful during development when you might have temporary unused variables or imports.
@@ -80,6 +88,11 @@ fn main() {
 }
 ```
 
+Output:
+
+```
+I'm 48 and I want $1000000
+```
 
 Let's break down this code:
 

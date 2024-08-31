@@ -4,14 +4,11 @@ use std::io;
 
 
 fn main() {
-    // Rust signed integer types: i8, i16, i32, i64, isize
-    // Rust unsigned integer types: u8, u16, u32, u64, usize
-
-    println!("Max u32: {}", u32::MAX);
-    println!("Max u64: {}", u64::MAX);
-    println!("Max u128: {}", u128::MAX);
-    println!("Max usize: {}", usize::MAX);
-    println!("Max isize: {}", isize::MAX);
-    println!("Max f32: {}", f32::MAX);
-    println!("Max f64: {}", f64::MAX);
+    const ONE_MIL: u32 = 1_000_000;
+    const PI: f32 = 3.141592;
+    let age: &str = "47";
+    let mut age: u32 = age.trim().parse()
+        .expect("Age wasn't assigned a number");
+    age = age + 1;
+    println!("I'm {} and I want ${}", age, ONE_MIL);
 }
