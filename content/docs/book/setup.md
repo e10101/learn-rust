@@ -265,3 +265,32 @@ In this example, we can observe several important aspects of Rust's math operati
 These operations showcase Rust's strong typing system and its behavior with different numeric types, which helps in writing more predictable and efficient code.
 
 
+### Random Number
+
+To generate a random number in Rust, we can use `rand` package.
+
+```rust
+use rand::Rng;
+
+fn main() {
+    let random_num = rand::thread_rng().gen_range(1..=100);
+    println!("Random number: {}", random_num);
+}
+```
+
+Output:
+
+```
+Random number: 86
+```
+
+In this example, we're using the `rand` crate to generate a random number. Here's what's happening:
+
+1. **Importing the necessary module**: We use `use rand::Rng;` to bring the `Rng` trait into scope. This trait provides the random number generation methods we need.
+
+2. **Generating a random number**: The `rand::thread_rng()` function gives us a random number generator that's local to the current thread. We then call `gen_range(1..=100)` on this generator to produce a random number between 1 and 100 (inclusive).
+
+This demonstrates how Rust's ecosystem can be easily extended with external crates to add functionality like random number generation. The `rand` crate is widely used and provides a simple, yet powerful interface for various random number generation needs.
+
+Note that each time you run this program, you'll likely get a different number, as that's the nature of random number generation.
+
