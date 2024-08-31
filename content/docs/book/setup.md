@@ -81,7 +81,6 @@ fn main() {
 ```
 
 
-
 Let's break down this code:
 
 1. `const ONE_MIL: u32 = 1_000_000;` defines a constant `ONE_MIL` of type `u32` (32-bit unsigned integer) with a value of one million. The underscore is used for readability and doesn't affect the value.
@@ -102,3 +101,48 @@ Let's break down this code:
 6. Finally, `println!("I'm {} and I want ${}", age, ONE_MIL);` prints a formatted string using the `age` and `ONE_MIL` variables.
 
 This code demonstrates constants, variable shadowing, type conversion, mutable variables, and string formatting in Rust.
+
+
+## Data Types
+
+In Rust, we have following number types:
+
+  - Unsigned Integer Types: `u8`, `u16`, `u32`, `u64`, `u128`, `usize`
+  - Signed Integer Types: `i8`, `i16`, `i32`, `i64`, `i128`, `isize`
+  - Floating-Point Types: `f32`, `f64`
+
+```rust
+fn main() {
+    println!("Max u32: {}", u32::MAX);
+    println!("Max u64: {}", u64::MAX);
+    println!("Max u128: {}", u128::MAX);
+    println!("Max usize: {}", usize::MAX);
+    println!("Max isize: {}", isize::MAX);
+    println!("Max f32: {}", f32::MAX);
+    println!("Max f64: {}", f64::MAX);
+}
+```
+
+The output of above codes is:
+
+```
+Max u32: 4294967295
+Max u64: 18446744073709551615
+Max u128: 340282366920938463463374607431768211455
+Max usize: 18446744073709551615
+Max isize: 9223372036854775807
+Max f32: 340282350000000000000000000000000000000
+Max f64: 179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+```
+
+The `usize` and `isize` types are specific to the target operating system's architecture. On a 64-bit system, `usize` and `isize` are both 64 bits, while on a 32-bit system, they are 32 bits.
+
+### Floating-Point Precision
+
+And we can see `f32` and `f64` are floating-point types with different levels of precision. From the output above:
+
+- `f32` has a maximum value of approximately 3.4 × 10^38
+- `f64` has a maximum value of approximately 1.8 × 10^308
+
+This demonstrates that `f64` provides significantly more precision and a much larger range than `f32`. The `f64` type is often the default choice for floating-point numbers in Rust when you need high precision, while `f32` can be used when memory usage is a concern and lower precision is acceptable.
+
