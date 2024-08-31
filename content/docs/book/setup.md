@@ -302,3 +302,13 @@ This demonstrates how Rust's ecosystem can be easily extended with external crat
 
 Note that each time you run this program, you'll likely get a different number, as that's the nature of random number generation.
 
+{{< hint info >}}
+**Note:**
+
+To use `rand` crate, we need to add following line to `Cargo.toml`:
+
+```toml
+rand = "0.8"
+```
+
+{{< /hint >}}
