@@ -1,5 +1,5 @@
 baseURL = 'https://example.org/'
 languageCode = 'en-us'
-title = 'Learn Rust'
+title = 'Learning Something'
 
 theme = 'hugo-book'
