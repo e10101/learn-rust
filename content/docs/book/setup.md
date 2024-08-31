@@ -1,3 +1,11 @@
+---
+weight: 1
+bookFlatSection: true
+title: "Basic Knowledge"
+---
+
+# Basic Knowledge
+
 ## Setup Rust
 
 ```shell
