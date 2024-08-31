@@ -118,6 +118,8 @@ This code demonstrates constants, variable shadowing, type conversion, mutable v
 
 ## Data Types
 
+### Number Types
+
 In Rust, we have following number types:
 
   - Unsigned Integer Types: `u8`, `u16`, `u32`, `u64`, `u128`, `usize`
@@ -150,7 +152,7 @@ Max f64: 17976931348623157000000000000000000000000000000000000000000000000000000
 
 The `usize` and `isize` types are specific to the target operating system's architecture. On a 64-bit system, `usize` and `isize` are both 64 bits, while on a 32-bit system, they are 32 bits.
 
-### Floating-Point Precision
+#### Floating-Point Precision
 
 And we can see `f32` and `f64` are floating-point types with different levels of precision. From the output above:
 
@@ -159,3 +161,45 @@ And we can see `f32` and `f64` are floating-point types with different levels of
 
 This demonstrates that `f64` provides significantly more precision and a much larger range than `f32`. The `f64` type is often the default choice for floating-point numbers in Rust when you need high precision, while `f32` can be used when memory usage is a concern and lower precision is acceptable.
 
+
+### Boolean Type
+
+In Rust, we have `bool` type to represent boolean values. It can be either `true` or `false`.
+
+```rust
+fn main() {
+    let is_true = true;
+    let is_false: bool = false;
+
+    println!("is_true: {}", is_true);
+    println!("is_false: {}", is_false);
+}
+```
+
+Output:
+
+```
+is_true: true
+is_false: false
+```
+
+### Character Type
+
+In Rust, we have `char` type to represent a single character. It is a 4-byte (32-bit) value that corresponds to a Unicode Scalar Value.
+
+```rust
+fn main() {
+    let a: char = 'a';
+    let heart_eyed_cat: char = '😻';
+
+    println!("a: {}", a);
+    println!("heart_eyed_cat: {}", heart_eyed_cat);
+}
+```
+
+Output:
+
+```
+a: a
+heart_eyed_cat: 😻
+```
