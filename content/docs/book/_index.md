@@ -1,5 +1,9 @@
 ---
 weight: 1
 bookFlatSection: true
-title: "Book"
+title: "Learn Rust"
 ---
+
+# Learn Rust
+
+In this section, we will learn Rust programming language.
