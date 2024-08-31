@@ -203,3 +203,64 @@ Output:
 a: a
 heart_eyed_cat: 😻
 ```
+
+## Math
+
+In Rust, we can use following math operations:
+
+- Addition: `+`
+- Subtraction: `-`
+- Multiplication: `*`
+- Division: `/`
+- Remainder: `%`
+
+For example:
+
+```rust
+fn main() {
+    let num_1: f32 = 1.1111111111111111111111;
+    println!("f32: {}", num_1 + 0.1111111111111111111111);
+
+    let num_2: f64 = 1.1111111111111111111111;
+    println!("f64: {}", num_2 + 0.1111111111111111111111);
+
+    let mut num_3: u32 = 5;
+    let num_4: u32 = 4;
+    println!("5 + 4 = {}", num_3 + num_4);
+    println!("5 - 4 = {}", num_3 - num_4);
+    println!("5 * 4 = {}", num_3 * num_4);
+    println!("5 / 4 = {}", num_3 / num_4);
+    println!("5 % 4 = {}", num_3 % num_4);
+
+    num_3 += 1;
+    println!("num_3 += 1: {}", num_3);
+}
+```
+
+Output:
+
+```
+f32: 1.2222223
+f64: 1.2222222222222223
+5 + 4 = 9
+5 - 4 = 1
+5 * 4 = 20
+5 / 4 = 1
+5 % 4 = 1
+num_3 += 1: 6
+```
+
+
+In this example, we can observe several important aspects of Rust's math operations:
+
+1. **Floating-point precision**: The `f32` and `f64` types demonstrate different levels of precision. The `f32` type (32-bit float) shows less precision in the result compared to the `f64` type (64-bit float).
+
+2. **Integer division**: When dividing integers (5 / 4), Rust performs integer division, which truncates the result to the nearest integer. That's why 5 / 4 equals 1, not 1.25.
+
+3. **Remainder operation**: The `%` operator calculates the remainder of a division. In this case, 5 % 4 equals 1, as 1 is the remainder when 5 is divided by 4.
+
+4. **Compound assignment**: The `+=` operator is used to add a value to a variable and assign the result back to the same variable. This is a shorthand for `num_3 = num_3 + 1`.
+
+These operations showcase Rust's strong typing system and its behavior with different numeric types, which helps in writing more predictable and efficient code.
+
+
