@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-use axum::{http, response::Html, routing::get, Router};
+use axum::{handler, http, response::{Html, IntoResponse}, routing::get, Router};
 use tokio::net::TcpListener;
 use tower_http::trace::TraceLayer;
 use tracing::{info, Level};
@@ -20,7 +20,7 @@ async fn main() {
     let trace_layer = TraceLayer::new_for_http();
 
     let routes_hello = Router::new()
-        .route("/hello", get(|| async { Html("Hello <strong>world</strong>") }))
+        .route("/hello", get(handler_hello))
         .layer(trace_layer);
 
     let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
@@ -29,4 +29,9 @@ async fn main() {
     axum::serve(listener, routes_hello.into_make_service())
         .await
         .unwrap();
+}
+
+async fn handler_hello() -> impl IntoResponse {
+    println!("->> {:<12} - handler_hello", "HANDLER");
+    Html("<h1>Hello <strong>world</strong></h1>")
 }
