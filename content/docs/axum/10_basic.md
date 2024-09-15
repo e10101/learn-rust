@@ -132,3 +132,49 @@ async fn main() {
         .unwrap();
 }
 ```
+
+## Query Parameters
+
+We can use `Query<parmas>` to get the query parameters.
+Before doing that, we need to import `serde::Deserialize` to deserialize the query parameters.
+
+### Install `serde` and `serde_json`
+Install `serde` and `serde_json` to our project.
+
+```toml
+[dependencies]
+...
+serde = { version = "1.0.210", features = ["derive"] }
+serde_json = "1.0.128"
+```
+
+### Use `Query` to get the query parameters
+
+```rust
+// Import the necessary modules
+use axum::extract::Query;
+use serde::Deserialize;
+
+// Define the struct to hold the query parameters
+#[derive(Debug, Deserialize)]
+struct HelloParams {
+    name: Option<String>,
+}
+
+// Update the handler to use the query parameters
+async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
+    println!("->> {:<12} - handler_hello - {params:?}", "HANDLER");
+    let name = params.name.as_deref().unwrap_or("world");
+    Html(format!("<h1>Hello <strong>{name}</strong></h1>"))
+}
+```
+
+Now, if you request the API with query parameters like `http://127.0.0.1:8080/hello?name=John`, you will get the following response:
+
+```html
+<h1>Hello <strong>John</strong></h1>
+```
+
+Which `John` is the query parameter `name` from the URL.
+
+
