@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 10
 bookFlatSection: true
 title: "Axum Basic"
 ---
@@ -8,6 +8,8 @@ title: "Axum Basic"
 
 ## Test without refreshing web browser
 
+### Install `cargo-watch`
+
 We can create a test file under `tests` directory.
 
 But before that, we need to install `cargo-watch` to automatically run the test when the code is changed.
@@ -15,6 +17,8 @@ But before that, we need to install `cargo-watch` to automatically run the test 
 ```bash
 cargo install cargo-watch
 ```
+
+### Watch the main application changes
 
 So we can watch the main application changes by following command:
 
@@ -29,6 +33,8 @@ In the above code:
 - The `-w` option is for watching the `src` directory.
 - The `-x` option is for running the `run` command. 
 
+### Watch the test changes
+
 About the test part, we can run following command to run the test:
 
 ```shell
@@ -38,6 +44,52 @@ cargo watch -q -c -w tests/ -x "test -q quick_dev -- --nocapture"
 In the above code, the `--nocapture` option is used to prevent the test from being captured by the terminal.
 
 Therefore, when the main application has any changes, we will auto refresh the API's behavior. At the same time, the test changes will be also captured and tested.
+
+### Test codes
+
+So we can create a test file under `tests` directory.
+
+```rust
+#![allow(unused)]
+
+use anyhow::Result;
+
+#[tokio::test]
+async fn quick_dev() -> Result<()> {
+    let hc = httpc_test::new_client("http://127.0.0.1:8080")?;
+
+    println!("Attempting to connect to http://127.0.0.1:8080");
+    let response = hc.do_get("/hello").await?;
+
+    println!("Response status: {}", response.status());
+    response.print().await?;
+
+    Ok(())
+}
+```
+
+In the above code, we use `httpc_test` to test the API requests, and use `do_get` to get the API requests.
+
+The output will be as follows:
+
+```console
+running 1 test
+Attempting to connect to http://127.0.0.1:8080
+Response status: 200 OK
+
+=== Response for GET http://127.0.0.1:8080/hello
+=> Status         : 200 OK
+=> Headers        :
+   content-type: text/html; charset=utf-8
+   content-length: 28
+   date: Sun, 15 Sep 2024 13:02:29 GMT
+=> Response Body  :
+Hello <strong>world</strong>
+===
+
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+```
 
 ## How to check API requests?
 
