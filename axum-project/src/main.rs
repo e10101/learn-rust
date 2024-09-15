@@ -1,13 +1,27 @@
 #![allow(unused)]
 
-use axum::{response::Html, routing::get, Router};
+use axum::{http, response::Html, routing::get, Router};
 use tokio::net::TcpListener;
+use tower_http::trace::TraceLayer;
+use tracing::{info, Level};
+use tracing_subscriber::FmtSubscriber;
 
 #[tokio::main]
 async fn main() {
-    let routes_hello = Router::new().route(
-        "/hello", 
-        get(|| async { Html("Hello <strong>world</strong>")}));
+
+    // Set up the tracing subscriber with a specific log level
+    let subscriber = FmtSubscriber::builder()
+        .with_max_level(Level::DEBUG)
+        .finish();
+    tracing::subscriber::set_global_default(subscriber)
+        .expect("setting default subscriber failed");
+
+    // Create a TraceLayer instance
+    let trace_layer = TraceLayer::new_for_http();
+
+    let routes_hello = Router::new()
+        .route("/hello", get(|| async { Html("Hello <strong>world</strong>") }))
+        .layer(trace_layer);
 
     let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
     println!("->> LISTENING on {:?}\n", listener.local_addr());
