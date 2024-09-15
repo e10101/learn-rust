@@ -35,4 +35,4 @@ You can use following command to run the Hugo server.
 hugo server --minify --port 8080
 ```
 
-Then open your browser and navigate to `http://localhost:8080`.
+Then open your browser and navigate to [http://localhost:8080](http://localhost:8080).
