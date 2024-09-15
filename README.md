@@ -32,7 +32,7 @@ git submodule update --init --recursive
 You can use following command to run the Hugo server.
 
 ```bash
-hugo server --minify --port 8080
+hugo server --minify --port 8812
 ```
 
 Then open your browser and navigate to [http://localhost:8080](http://localhost:8080).
