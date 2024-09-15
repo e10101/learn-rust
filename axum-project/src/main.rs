@@ -1,6 +1,7 @@
 #![allow(unused)]
 
-use axum::{handler, http, response::{Html, IntoResponse}, routing::get, Router};
+use axum::{extract::Query, handler, http, response::{Html, IntoResponse}, routing::get, Router};
+use serde::Deserialize;
 use tokio::net::TcpListener;
 use tower_http::trace::TraceLayer;
 use tracing::{info, Level};
@@ -31,7 +32,13 @@ async fn main() {
         .unwrap();
 }
 
-async fn handler_hello() -> impl IntoResponse {
-    println!("->> {:<12} - handler_hello", "HANDLER");
-    Html("<h1>Hello <strong>world</strong></h1>")
+#[derive(Debug, Deserialize)]
+struct HelloParams {
+    name: Option<String>,
+}
+
+async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
+    println!("->> {:<12} - handler_hello - {params:?}", "HANDLER");
+    let name = params.name.as_deref().unwrap_or("world");
+    Html(format!("<h1>Hello <strong>{name}</strong></h1>"))
 }
