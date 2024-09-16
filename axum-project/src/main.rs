@@ -3,6 +3,7 @@
 pub use self::error::{Error, Result};
 
 use axum::{extract::{Path, Query}, handler, http, middleware, response::{Html, IntoResponse, Response}, routing::{get, get_service}, Router};
+use model::ModelController;
 use serde::Deserialize;
 use tokio::net::TcpListener;
 use tower_cookies::CookieManagerLayer;
@@ -16,6 +17,7 @@ mod web;
 
 #[tokio::main]
 async fn main() {
+    let mc = ModelController::new();
 
     // Set up the tracing subscriber with a specific log level
     let subscriber = FmtSubscriber::builder()
@@ -30,6 +32,7 @@ async fn main() {
     let routes_all = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
+        .nest("/api", web::routes_tickets::routes(mc.clone()))
         .layer(middleware::map_response(main_response_mapper))
         .layer(CookieManagerLayer::new())
         .fallback_service(routes_static())
