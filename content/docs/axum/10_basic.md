@@ -462,3 +462,181 @@ Hello2 <strong>Mike</strong>
 As we can see, there is no cookies in the first response, but after we login, the last request contains a `Client Cookies` with the `auth-token` cookie.
 
 Therefore, if we want to get and set Cookies, we can use the `tower-cookies` to do that.
+
+## CRUD
+
+### Mock Data Store
+
+For mocking the CRUD API, we can create a `ModelController` to manage the data.
+
+```rust
+
+#[derive(Clone)]
+pub struct ModelController {
+    tickets_store: Arc<Mutex<Vec<Option<Ticket>>>>,
+}
+```
+
+Here, we created a memory data store for the tickets.
+
+- `Arc` is used to share the data store between multiple threads.
+- `Mutex` is used to ensure the data store is thread-safe.
+
+Therefore, in the CURD handler functions, we can get the lock data store and do modification to mock operations.
+For example, by using following code, we can create a new ticket:
+
+```rust
+impl ModelController {
+    pub async fn create_ticket(&self, ticket_fc: TicketForCreate) -> Result<Ticket> {
+        // Get the lock of the data store
+        let mut store = self.tickets_store.lock().unwrap();
+
+        // Create a new ticket
+
+        let id = store.len() as u64;
+        let ticket = Ticket {
+            id,
+            title: ticket_fc.title,
+        };
+        
+        // Add the new ticket to the data store
+        store.push(Some(ticket.clone()));
+
+        Ok(ticket)
+    }
+    // ... other CRUD operations
+}
+```
+
+### Register the ModelController
+
+In the route part, we can create a new `ModelController` and pass it to the handler functions.
+
+```rust
+
+#[tokio::main]
+async fn main() {
+    let mc = ModelController::new();
+
+    // ... other logics
+
+    let routes_all = Router::new()
+    // ... other routes
+    .nest("/api", web::routes_tickets::routes(mc.clone()))
+    // ... other routes
+```
+
+### Define the routes for the tickets
+
+Then in the routes definition, we can use `web::routes_tickets::routes(mc.clone())` to get the routes for the tickets. As shown in the following code:
+
+```rust
+pub fn routes(mc: ModelController) -> Router {
+    Router::new()
+        .route("/tickets", post(create_ticket).get(list_tickets))
+        .route("/tickets/:id", delete(delete_ticket))
+        .with_state(mc)
+}
+
+async fn create_ticket(
+    State(mc): State<ModelController>,
+    Json(ticket_fc): Json<TicketForCreate>,
+) -> Result<Json<Ticket>> {
+    println!("->> {:<12} - create_ticket", "HANDLER");
+
+    let ticket = mc.create_ticket(ticket_fc).await?;
+    Ok(Json(ticket))
+}
+
+// ... other handlers
+```
+
+### Test the CRUD API
+
+We can use `httpc_test` to test the CRUD API.
+
+```rust
+// Create a new ticket
+let req_create_ticket = hc.do_post(
+    "/api/tickets",
+    json!({
+        "title": "Ticket 1"
+    })
+);
+
+req_create_ticket.await?.print().await?;
+
+// Try to delete the ticket
+hc.do_delete("/api/tickets/1").await?.print().await?;
+
+// List all tickets
+hc.do_get("/api/tickets").await?.print().await?;
+```
+
+The output of abvoe codes will be as follows:
+
+Create a new ticket:
+
+```console
+=== Response for POST http://127.0.0.1:8080/api/tickets
+=> Status         : 200 OK
+=> Headers        :
+   content-type: application/json
+   content-length: 27
+   date: Mon, 16 Sep 2024 07:32:28 GMT
+=> Client Cookies :
+   auth-token: user-1.exp.sign
+=> Response Body  :
+{
+  "id": 3,
+  "title": "Ticket 1"
+}
+===
+```
+
+Delete the ticket:
+
+```console
+=== Response for DELETE http://127.0.0.1:8080/api/tickets/1
+=> Status         : 500 Internal Server Error
+=> Headers        :
+   content-type: text/plain; charset=utf-8
+   content-length: 22
+   date: Mon, 16 Sep 2024 07:32:28 GMT
+=> Client Cookies :
+   auth-token: user-1.exp.sign
+=> Response Body  :
+UNHANDLED_CLIENT_ERROR
+===
+```
+
+List all tickets:
+
+```console
+=== Response for GET http://127.0.0.1:8080/api/tickets
+=> Status         : 200 OK
+=> Headers        :
+   content-type: application/json
+   content-length: 85
+   date: Mon, 16 Sep 2024 07:32:28 GMT
+=> Client Cookies :
+   auth-token: user-1.exp.sign
+=> Response Body  :
+[
+  {
+    "id": 0,
+    "title": "Ticket 1"
+  },
+  {
+    "id": 2,
+    "title": "Ticket 1"
+  },
+  {
+    "id": 3,
+    "title": "Ticket 1"
+  }
+]
+===
+```
+
+With the above settings, we implemented a simple CRUD API.
