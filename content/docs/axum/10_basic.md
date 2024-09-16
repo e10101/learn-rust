@@ -282,3 +282,70 @@ You will see the source code of `main.rs` file.
 Please be careful with the `ServeDir`, it will expose all the files in the directory to the web browser.
 So you need to make sure the directory is not expose sensitive information.
 {{< /hint >}}
+
+## Post Request
+
+To handle the post request, we can use `Json<T>` to get the request body.
+
+```rust
+pub fn routes() -> Router {
+    // With `post` defined, we can use `Json<T>` to get the request body
+    Router::new().route("/api/login", post(api_login))
+}
+
+// Get Json input and return Json output
+async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>> {
+    println!("->> {:<12} - api_login", "HANDLER");
+
+    if payload.username != "demo1" || payload.pwd != "welcome" {
+        return Err(Error::LoginFail);
+    }
+
+    let body = Json(json!({
+        "result": {
+            "success": true
+        }
+    }));
+
+    Ok(body)
+}
+
+// Define the struct to hold the login payload
+#[derive(Debug, Deserialize)]
+struct LoginPayload {
+    username: String,
+    pwd: String,
+}
+```
+
+From the above code, we can see that we can use `serde_json::json!` to create a JSON object.
+And we can use `Json(json)` to return a JSON response.
+
+## Error Handling
+
+When we need to handle errors, we can define a enum to hold the error type, and then implement `IntoResponse` for it.
+
+```rust
+// Define the error type
+#[derive(Debug)]
+pub enum Error {
+    LoginFail,
+}
+
+// Implement `IntoResponse` for `Error`
+impl IntoResponse for Error {
+    fn into_response(self) -> Response {
+        println!("->> {:<12} - {self:?}", "INTO_RES");
+
+        (StatusCode::INTERNAL_SERVER_ERROR, "UNHANDLED_CLIENT_ERROR").into_response()
+    }
+}
+```
+
+For example, when users login failed, we can directly return a `LoginFail` error, which will return a `500 INTERNAL SERVER ERROR` status code to the client.
+
+```rust
+if payload.username != "demo1" || payload.pwd != "welcome" {
+    return Err(Error::LoginFail);
+}
+```
