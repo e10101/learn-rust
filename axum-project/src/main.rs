@@ -1,11 +1,16 @@
 #![allow(unused)]
 
+pub use self::error::{Error, Result};
+
 use axum::{extract::{Path, Query}, handler, http, response::{Html, IntoResponse}, routing::{get, get_service}, Router};
 use serde::Deserialize;
 use tokio::net::TcpListener;
 use tower_http::{services::ServeDir, trace::TraceLayer};
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
+
+mod error;
+mod web;
 
 #[tokio::main]
 async fn main() {
@@ -22,6 +27,7 @@ async fn main() {
 
     let routes_all = Router::new()
         .merge(routes_hello())
+        .merge(web::routes_login::routes())
         .fallback_service(routes_static())
         .layer(trace_layer);
 
