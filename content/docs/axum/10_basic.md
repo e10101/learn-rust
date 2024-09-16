@@ -178,3 +178,32 @@ Now, if you request the API with query parameters like `http://127.0.0.1:8080/he
 Which `John` is the query parameter `name` from the URL.
 
 
+## Path Parameters
+
+Instead of getting parameters from query string, we can also get parameters from the path.
+For example some path like `/user/123`, we can get the `123` from the path directly.
+
+For getting path parameters, we can use `Path<String>` to get variables from the path.
+
+```rust
+// Add path parameters to the router
+let routes_hello = Router::new()
+        .route("/hello2/:name", get(handler_hello2))
+
+// Extract path parameters and use it in the handler function
+async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
+    println!("->> {:<12} - handler_hello2 - {name:?}", "HANDLER");
+    Html(format!("Hello2 <strong>{name}</strong>"))
+}
+```
+
+To get the path parameters, we need to add `:name` to the path.
+For example, the path is `/hello2/:name`, then we can get the path parameters by using `Path<String>` in the handler function.
+
+Now, if you request the API with path parameters like `http://127.0.0.1:8080/hello2/John`, you will get the following response:
+
+```html
+Hello2 <strong>John</strong>
+```
+
+In short, we can use pattern like `Path(name): Path<String>` to define and get value from the path parameters and use it in the handler function.
