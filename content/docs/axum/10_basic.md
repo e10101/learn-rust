@@ -207,3 +207,33 @@ Hello2 <strong>John</strong>
 ```
 
 In short, we can use pattern like `Path(name): Path<String>` to define and get value from the path parameters and use it in the handler function.
+
+## Route Grouping
+
+When we have many routes, it will be better for the code organization if we can group the routes.
+
+For example, we can group the routes by using `Router::new().merge(routes_hello())` and another `merge` with `.merge(routes_hi())`.
+As shown in the following code:
+
+```rust
+// Merge multiple routes into one routes
+Router::new()
+    .merge(routes_hello())
+    .merge(routes_hi())
+
+// Define the routes
+fn routes_hello() -> Router {
+    Router::new()
+        .route("/hello", get(handler_hello))
+        .route("/hello2/:name", get(handler_hello2))
+}
+
+// Define another routes
+fn routes_hi() -> Router {
+    Router::new()
+        .route("/hi/:name", get(handler_hi))
+        .route("/howdy", get(handler_howdy))
+}
+```
+
+With `merge()` and handler functions, we can group the routes and create a more complex routes system.
