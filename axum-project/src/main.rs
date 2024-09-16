@@ -11,6 +11,7 @@ use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
 
 mod error;
+mod model;
 mod web;
 
 #[tokio::main]
