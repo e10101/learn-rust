@@ -237,3 +237,48 @@ fn routes_hi() -> Router {
 ```
 
 With `merge()` and handler functions, we can group the routes and create a more complex routes system.
+
+## Serving Static Files
+
+Sometimes, we want to serve static files like HTML, JS, CSS, etc.
+So we can use `ServeDir` to serve static files.
+
+For doing that, we need to add `tower-http` feature `fs` to our project.
+
+```toml
+[dependencies]
+...
+tower-http = { version = "0.5.2", features = ["fs"]}
+```
+
+Then, we can use `nest_service()` to nest the static files service into our routes.
+
+```rust
+fn routes_static() -> Router {
+    Router::new().nest_service("/", get_service(ServeDir::new("./")))
+}
+```
+
+In the above code, we mapped the root path `/` to the static files service which will load static files from current directory (`./`).
+
+Then, we need to register the `routes_static()` to our routes with the `fallback_service()` function which do fallback to the static files service when the route is not found in the `routes_hello()` or other defined routes.
+
+```rust
+let routes_all = Router::new()
+    .merge(routes_hello())
+    .fallback_service(routes_static()) // Fallback to the static files service
+```
+
+For now, let's test that, we can try to load our source code file in the browser.
+
+```html
+http://127.0.0.1:8080/src/main.rs
+```
+
+You will see the source code of `main.rs` file.
+
+
+{{< hint warning >}}
+Please be careful with the `ServeDir`, it will expose all the files in the directory to the web browser.
+So you need to make sure the directory is not expose sensitive information.
+{{< /hint >}}

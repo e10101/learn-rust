@@ -1,9 +1,9 @@
 #![allow(unused)]
 
-use axum::{extract::{Path, Query}, handler, http, response::{Html, IntoResponse}, routing::get, Router};
+use axum::{extract::{Path, Query}, handler, http, response::{Html, IntoResponse}, routing::{get, get_service}, Router};
 use serde::Deserialize;
 use tokio::net::TcpListener;
-use tower_http::trace::TraceLayer;
+use tower_http::{services::ServeDir, trace::TraceLayer};
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
 
@@ -22,6 +22,7 @@ async fn main() {
 
     let routes_all = Router::new()
         .merge(routes_hello())
+        .fallback_service(routes_static())
         .layer(trace_layer);
 
     let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
@@ -30,6 +31,10 @@ async fn main() {
     axum::serve(listener, routes_all.into_make_service())
         .await
         .unwrap();
+}
+
+fn routes_static() -> Router {
+    Router::new().nest_service("/", get_service(ServeDir::new("./")))
 }
 
 fn routes_hello() -> Router {
