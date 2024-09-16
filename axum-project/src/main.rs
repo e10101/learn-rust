@@ -2,7 +2,7 @@
 
 pub use self::error::{Error, Result};
 
-use axum::{extract::{Path, Query}, handler, http, response::{Html, IntoResponse}, routing::{get, get_service}, Router};
+use axum::{extract::{Path, Query}, handler, http, middleware, response::{Html, IntoResponse, Response}, routing::{get, get_service}, Router};
 use serde::Deserialize;
 use tokio::net::TcpListener;
 use tower_http::{services::ServeDir, trace::TraceLayer};
@@ -28,6 +28,7 @@ async fn main() {
     let routes_all = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
+        .layer(middleware::map_response(main_response_mapper))
         .fallback_service(routes_static())
         .layer(trace_layer);
 
@@ -37,6 +38,13 @@ async fn main() {
     axum::serve(listener, routes_all.into_make_service())
         .await
         .unwrap();
+}
+
+async fn main_response_mapper(res: Response) -> Response {
+    println!("->> {:<12} - main_response_mapper", "RES_MAPPER");
+    
+    println!();
+    res
 }
 
 fn routes_static() -> Router {
