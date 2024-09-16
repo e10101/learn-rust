@@ -349,3 +349,116 @@ if payload.username != "demo1" || payload.pwd != "welcome" {
     return Err(Error::LoginFail);
 }
 ```
+
+## Cookies
+
+After logging in, we want to keep the user logged in.
+We can use `tower-cookies` to manage the cookies.
+
+### Install `tower-cookies`
+
+Install `tower-cookies` to our project with command: `cargo add tower-cookies`, 
+the updated `Cargo.toml` is as follows:
+
+```toml
+[dependencies]
+...
+tower-cookies = "0.10.0"
+```
+
+### Set Cookies after login
+
+By using `cookies.add(Cookie::new(key, value))`, we can add a cookie to the response.
+
+```rust
+async fn api_login(cookies: Cookies, payload: Json<LoginPayload>) -> Result<Json<Value>> {
+    // ...
+    cookies.add(Cookie::new(web::AUTH_TOKEN, "user-1.exp.sign"));
+    // ...
+}
+```
+
+The response will have a new header named as `Set-Cookie` which will tell the browser to save the cookie.
+Then next time, when the browser request the API, it will send the cookie to the server.
+
+### Test the cookie setting
+
+We can use `httpc_test` to test the cookie setting.
+
+```rust
+// First, call one API before login
+hc.do_get("/hello2/Mike").await?.print().await?;
+
+// Login
+let req_login = hc.do_post(
+    "/api/login",
+    json!({
+        "username": "demo1",
+        "pwd": "welcome"
+    })
+);
+
+req_login.await?.print().await?;
+
+// Call the API after login
+hc.do_get("/hello2/Mike").await?.print().await?;
+```
+
+We will see the following output in the terminal:
+
+The first response:
+
+```console
+=== Response for GET http://127.0.0.1:8080/hello2/Mike
+=> Status         : 200 OK
+=> Headers        :
+   content-type: text/html; charset=utf-8
+   content-length: 28
+   date: Mon, 16 Sep 2024 03:17:02 GMT
+=> Response Body  :
+Hello2 <strong>Mike</strong>
+===
+```
+
+Login API response:
+
+```console
+=== Response for POST http://127.0.0.1:8080/api/login
+=> Status         : 200 OK
+=> Headers        :
+   content-type: application/json
+   content-length: 27
+   set-cookie: auth-token=user-1.exp.sign
+   date: Mon, 16 Sep 2024 03:17:02 GMT
+=> Response Cookies:
+   auth-token: user-1.exp.sign
+=> Client Cookies :
+   auth-token: user-1.exp.sign
+=> Response Body  :
+{
+  "result": {
+    "success": true
+  }
+}
+===
+```
+
+The response after login (`Set-Cookie`):
+
+```console
+=== Response for GET http://127.0.0.1:8080/hello2/Mike
+=> Status         : 200 OK
+=> Headers        :
+   content-type: text/html; charset=utf-8
+   content-length: 28
+   date: Mon, 16 Sep 2024 03:17:02 GMT
+=> Client Cookies :
+   auth-token: user-1.exp.sign
+=> Response Body  :
+Hello2 <strong>Mike</strong>
+===
+```
+
+As we can see, there is no cookies in the first response, but after we login, the last request contains a `Client Cookies` with the `auth-token` cookie.
+
+Therefore, if we want to get and set Cookies, we can use the `tower-cookies` to do that.
