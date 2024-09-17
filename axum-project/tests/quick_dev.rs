@@ -12,6 +12,7 @@ async fn quick_dev() -> Result<()> {
     hc.do_get("/hello2/Mike").await?.print().await?;
     hc.do_get("/src/main.rs").await?.print().await?;
 
+    // Login
     let req_login = hc.do_post(
         "/api/login",
         json!({
@@ -19,11 +20,12 @@ async fn quick_dev() -> Result<()> {
             "pwd": "welcome"
         })
     );
-
     req_login.await?.print().await?;
 
+    // Test Cookies
     hc.do_get("/hello2/Mike").await?.print().await?;
 
+    // Create Ticket
     let req_create_ticket = hc.do_post(
         "/api/tickets",
         json!({
@@ -33,8 +35,10 @@ async fn quick_dev() -> Result<()> {
 
     req_create_ticket.await?.print().await?;
 
+    // Delete Ticket
     hc.do_delete("/api/tickets/1").await?.print().await?;
 
+    // Get Tickets
     hc.do_get("/api/tickets").await?.print().await?;
 
     Ok(())
