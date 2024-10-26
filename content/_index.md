@@ -3,4 +3,6 @@ title: Introduction
 type: docs
 ---
 
-# Ac
+# Hi
+
+Hello there, welcome to this learning notes website.
