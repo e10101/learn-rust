@@ -36,3 +36,39 @@ hugo server --minify --port 8812
 ```
 
 Then open your browser and navigate to [http://localhost:8080](http://localhost:8080).
+
+## Create a new section or post
+
+### Create a new section
+
+To create a new section, use the following command:
+
+```bash
+hugo new --kind chapter content/<section-name>/_index.md
+```
+
+Replace `<section-name>` with the desired name for your new section. For example:
+
+```bash
+hugo new --kind chapter content/advanced-topics/_index.md
+```
+
+This will create a new section called "Advanced Topics" with an `_index.md` file.
+
+### Create a new post
+
+To create a new post within a section, use the following command:
+
+```bash
+hugo new content/<section-name>/<post-name>.md
+```
+
+Replace `<section-name>` with the name of the section where you want to add the post, and `<post-name>` with the desired name for your new post. For example:
+
+```bash
+hugo new content/axum/middleware.md
+```
+
+This will create a new post called "middleware.md" in the "axum" section.
+
+After creating a new section or post, you can edit the generated Markdown file to add your content.
