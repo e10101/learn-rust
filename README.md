@@ -1,5 +1,9 @@
 # Learn Rust
 
+## Links
+
+- Dev: [https://learn-rust-ekm.pages.dev/](https://learn-rust-ekm.pages.dev/)
+
 ## Setup Hugo
 
 You can use following command to install Hugo.
