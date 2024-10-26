@@ -70,6 +70,7 @@ Clickhouse提供了本地数据文件、执行程序、远程数据文件，以�
 - `mysql`: 接入MySQL类型的数据库。
 - `clickhouse`: 接入Clickhouse类型的数据库。
 - `mongodb`: 接入MongoDB类型的数据库。
+- `redis`: 接入Redis类型的数据库。
 - `cassandra`: 接入Cassadra类型的数据库。
 - `postgresql`: 接入PostgreSQL类型的数据库。
 
